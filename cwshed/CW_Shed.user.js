@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CW: Shed
-// @version      1.43
+// @version      1.44
 // @description  Сборник небольших дополнений к игре CatWar
 // @author       ReiReiRei
 // @copyright    2020-2024, Тис (https://catwar.su/cat406811)
@@ -16,7 +16,7 @@
 (function (window, document, $) {
   'use strict';
   if (typeof $ === 'undefined') return;
-  const version = '1.43';
+  const version = '1.44';
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
   const isDesktop = !$('meta[name=viewport]').length;
   const defaults = {
@@ -713,6 +713,10 @@
       .cws_chat_msg {-webkit-flex: auto;flex: auto;-webkit-flex-direction: row;flex-direction: row;}.cws_chat_report {width: 42px;}.cws_chat_report {-webkit-touch-callout: none;
       -webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}`);
       // варомод (почему вы просите добавить совместимость меня, когда совместимость проще добавить тому кто сделал эту компактную игровую?)
+	$('body').append(`<style>#itemList {
+                        		display: inline-flex;}
+                         </style>`);
+      //ну так получше будет видеть предметы 02.11.24
       const hvo_settings = JSON.parse(window.localStorage.getItem('cwmod_settings') || '{}');
       if (hvo_settings.cw3_compact) {
         addCSS(`#cws_chat_msg { width: auto !important; height: 350px; padding: 2px; }`);
