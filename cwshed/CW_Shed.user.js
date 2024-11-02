@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CW: Shed
-// @version      1.43
+// @version      1.45
 // @description  Сборник небольших дополнений к игре CatWar
 // @author       ReiReiRei
 // @copyright    2020-2024, Тис (https://catwar.su/cat406811)
@@ -16,7 +16,7 @@
 (function (window, document, $) {
   'use strict';
   if (typeof $ === 'undefined') return;
-  const version = '1.43';
+  const version = '1.45';
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
   const isDesktop = !$('meta[name=viewport]').length;
   const defaults = {
@@ -713,6 +713,26 @@
       .cws_chat_msg {-webkit-flex: auto;flex: auto;-webkit-flex-direction: row;flex-direction: row;}.cws_chat_report {width: 42px;}.cws_chat_report {-webkit-touch-callout: none;
       -webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}`);
       // варомод (почему вы просите добавить совместимость меня, когда совместимость проще добавить тому кто сделал эту компактную игровую?)
+ function moveItemList() {
+    const itemList = document.getElementById("itemList");
+    const trMouth = document.getElementById("tr_mouth");
+
+    // Проверяем, что itemList существует и находится в td
+    if (itemList && itemList.parentElement.tagName === 'TD') {
+        // Перемещаем itemList в начало tr_mouth
+        trMouth.insertBefore(itemList, trMouth.firstChild);
+    }
+}
+
+// Вызываем функцию при загрузке страницы
+document.addEventListener("DOMContentLoaded", moveItemList);
+
+// MutationObserver для динамического отслеживания изменений в DOM
+const observer = new MutationObserver(moveItemList);
+observer.observe(document.body, { childList: true, subtree: true });
+
+
+        //ну так получше будет видеть предметы 02.11.24
       const hvo_settings = JSON.parse(window.localStorage.getItem('cwmod_settings') || '{}');
       if (hvo_settings.cw3_compact) {
         addCSS(`#cws_chat_msg { width: auto !important; height: 350px; padding: 2px; }`);
