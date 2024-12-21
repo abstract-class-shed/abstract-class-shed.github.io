@@ -1024,27 +1024,47 @@
     }
     if (globals.on_shortFightLog) {
       $(document).ready(function () {
-        let prev_log = '';
-        let prev_class = '';
-        $("#fightLog").on('DOMNodeInserted', 'span:not(.cws-hit-count)', function (e) {
-          let this_log = $(this).html();
-          let this_class = $(this).attr('class');
-          if (this_log == prev_log && prev_class == this_class) {
-            $(this).remove();
-            $('#fightLog > br:first-child').remove(); //чистка
-            let $to_change = $('.cws-hit-count').first();
-            let count = parseInt($to_change.attr('count'));
-            count++;
-            $to_change.attr('count', count);
-            $to_change.html(' (х' + count + ')');
-          }
-          else { //новый удар
-            $('<span class="cws-hit-count ' + this_class + '" count=1></span>').insertAfter($(this));
-          }
-          prev_log = this_log;
-          prev_class = this_class;
-        });
-      });
+              let prev_log = '';
+              let prev_class = '';
+              const observer = new MutationObserver(function (mutationsList) {
+                  mutationsList.forEach(function (mutation) {
+                      if (mutation.type === 'childList') {
+                          $(mutation.addedNodes).each(function () {
+                              if (this.nodeType === Node.ELEMENT_NODE && $(this).is('span:not(.cws-hit-count)')) {
+                                  GM_log('MutationObserver detected change');
+
+                                  let this_log = $(this).html();
+                                  let this_class = $(this).attr('class');
+
+                                  if (this_log === prev_log && prev_class === this_class) {
+                                      $(this).remove();
+                                      $('#fightLog > br:first-child').remove(); // Чистка
+                                      let $to_change = $('.cws-hit-count').first();
+                                      let count = parseInt($to_change.attr('count'));
+                                      count++;
+                                      $to_change.attr('count', count);
+                                      $to_change.html(' (х' + count + ')');
+                                  } else { // Новый удар
+                                      $('<span class="cws-hit-count ' + this_class + '" count=1></span>').insertAfter($(this));
+                                  }
+
+                                  prev_log = this_log;
+                                  prev_class = this_class;
+                              }
+                          });
+                      }
+                  });
+              });
+
+              // Наблюдаем за элементом #fightLog
+              const fightLog = document.getElementById('fightLog');
+              if (fightLog) {
+                  observer.observe(fightLog, {
+                      childList: true, // Отслеживаем добавление/удаление дочерних узлов
+                      subtree: false,  // Не отслеживаем изменения в дочерних элементах
+                  });
+              }
+          });
     }
     if (globals.on_teamFights) {
       $('head').append(`<style>
